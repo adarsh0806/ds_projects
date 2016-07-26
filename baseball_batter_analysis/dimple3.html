@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div id="chartContainer">
+        <script src="http://d3js.org/d3.v3.min.js">
+        </script> 
+        <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js">
+        </script> 
+        <script src=
+        "//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js">
+        </script> 
+        <script type="text/javascript">
+         function draw(data){
+            // Create SVG element
+            var svg = dimple.newSvg("#chartContainer", 1200, 600);
+            var margin = 50;
+            
+            d3.select('body')
+              .append('h2');
+
+            // Instantiate plot
+            var myChart = new dimple.chart(svg, data);
+            var x = myChart.addCategoryAxis("x", ["grouped_Avg","handedness"]); 
+            x.addOrderRule("grouped_Avg");
+            var y = myChart.addMeasureAxis("y","count_value");
+            // add x and y axis plots
+            x.title = "Grouped average based on Handedness";
+            y.title = "Number of players";
+            // add legend
+            var legend = myChart.addLegend(1080, 120, 60, 300, "right", myChart.addSeries("handedness"));
+            // set up line plot
+            var mySeries = myChart.addSeries(["handedness"], dimple.plot.line);
+            myChart.addSeries("handedness", dimple.plot.scatter);  
+            // draw plot
+            myChart.draw();
+          }       
+        </script>
+        <h1>Baseball Batter Analysis:<br></h1>
+        <h2>Right Handed Batters vs Left Handed Batters: Lefties come out on
+        top!</h2>
+        <script type="text/javascript">
+        /*
+        Use D3 (not dimple.js) to load the CSV file
+        and pass the contents of it to the draw function
+        */
+        // updated csv file
+        d3.csv("baseball_data_groupedavg.csv", draw);
+        </script>
+    </div>
+</body>
+</html>

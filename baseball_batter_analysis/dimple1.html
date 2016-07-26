@@ -1,0 +1,107 @@
+<html>
+<div id="chartContainer">
+   <head>
+      <script src="http://d3js.org/d3.v3.min.js"></script>
+      <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+      <script type="text/javascript">
+         function draw(data){
+
+            // var svg = dimple.newSvg("#chartContainer", 800, 600);
+            var margin = 50,
+              width = 1200,
+              height = 600;
+            d3.select('body')
+              .append('h2');
+
+            var svg = d3.select("body")
+               .append("svg")
+               .attr("width", width)
+               .attr("height", height)
+               .append('g')
+               .attr('class','chart');
+             
+            // Create chart  
+            var chart = new dimple.chart(svg, data);
+            
+            // Set up X Axis
+            var x_axis = chart.addMeasureAxis("x", "avg");
+            x_axis.tickFormat = "g"; //ensures correct number of decimal places for batting averages
+            x_axis.title = "Batting Average";
+            x_axis.overrideMin = 0.0
+            x_axis.overrideMax = 0.4;
+            
+            // Set up Y axis
+            var y_axis = chart.addMeasureAxis("y", "HR");
+            y_axis.title = "Number of Home Runs";
+            y_axis.overrideMin = 10
+            y_axis.overrideMax = 600;
+            
+            // Add Legend
+            var legend = chart.addLegend(1080, 120, 60, 300, "Right", chart.addSeries("handedness"));
+            var series = chart.addSeries(['name', 'height', 'weight', 'HR', 'handedness'], dimple.plot.bubble);
+    
+            chart.draw();
+            chart.legends = []
+            
+            svg.selectAll("title_text")
+             .data(["Click legend to","show/hide Handedness:"])
+             .enter()
+             .append("text")
+             .attr("x", 1080)
+             .attr("y", function (d, i) { return 90 + i * 14; })
+             .style("font-family", "Arial")
+             .style("font-size", "10px")
+             .style("color", "Black")
+             .text(function (d) { return d; });
+
+             // Get a unique list of Handedness values to use when filtering
+             var filterValues = dimple.getUniqueValues(data, "handedness");
+             // Get all the rectangles from our now orphaned legend
+             legend.shapes.selectAll("rect")
+             // Add a click event to each rectangle
+             .on("click", function (e) {
+               // This indicates whether the item is already visible or not
+               var hide = false;
+               var newFilters = [];
+               // If the filters contain the clicked shape hide it
+               filterValues.forEach(function (f) {
+                 if (f === e.aggField.slice(-1)[0]) {
+                   hide = true;
+                 } else {
+                   newFilters.push(f);
+                 }
+               });
+               // Hide the shape or show it
+               if (hide) {
+                 d3.select(this).style("opacity", 0.2);
+               } else {
+                 newFilters.push(e.aggField.slice(-1)[0]);
+                 d3.select(this).style("opacity", 0.8);
+               }
+               // Update the filters
+               filterValues = newFilters;
+               // Filter the data
+               chart.data = dimple.filterData(data, "handedness", filterValues);
+               // Passing a duration parameter makes the chart animate. Without
+               // it there is no transition
+               chart.draw(800);
+             });
+         }       
+      </script>
+   </head>
+   <body>
+  <h1>
+    Home Runs vs Batting Average  by Handedness
+  </h1>
+  This is a plot with the number of home runs hit on the Y axis and the batting average of each individual player on the X axis and it is indexed by the handedness of the player. The legend is clickable.
+  <script type="text/javascript">
+  /*
+    Use D3 (not dimple.js) to load the CSV file
+    and pass the contents of it to the draw function
+    */
+  d3.csv("baseball_data.csv", draw);
+  </script>
+</body>
+</div>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div id="chartContainer">
+        <script src="http://d3js.org/d3.v3.min.js">
+        </script> 
+        <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js">
+        </script> 
+        <script src=
+        "//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js">
+        </script> 
+        <script type="text/javascript">
+        // draw first plot with analysis of batting averages
+         function draw1(data){
+            // Create SVG element
+            data = dimple.filterData(data, "handedness", ["R", "L"])
+            var svg = dimple.newSvg("#chartContainer", 800, 400);
+            var margin = 50;
+
+            d3.select('body')
+              .append('h2');
+          // instantiate chart object
+          var myChart = new dimple.chart(svg, data);
+          // set boundary for the plot
+          myChart.setBounds(60, 30, 510, 330)
+          // set up the data to be plotted
+          var x = myChart.addCategoryAxis("x", 'handedness');
+          var y = myChart.addMeasureAxis("y", 'median_avg' );
+          myChart.addSeries("median_avg", dimple.plot.bar);
+          // add x and y axis title
+          x.title = "Handedness (L - Left, R - Right)";
+          y.title = "Median Batting Average";
+          // draw plot
+          myChart.draw();  
+      };
+      // draw second plot with analysis of home runs hit
+        function draw2(data){
+            // Create SVG element
+            data = dimple.filterData(data, "handedness", ["R", "L"])
+            var svg = dimple.newSvg("#chartContainer", 800, 400);
+            var margin = 50;
+
+            d3.select('body')
+              .append('h2');
+          // set up chart object
+          var myChart = new dimple.chart(svg, data);
+          // set up the boundary for plot
+          myChart.setBounds(60, 30, 510, 330)
+          // add data to be plotted
+          var x = myChart.addCategoryAxis("x", 'handedness');
+          var y = myChart.addMeasureAxis("y", 'median_HR' );
+          myChart.addSeries("median_HR", dimple.plot.bar);
+          // add x and y axis title
+          x.title = "Handedness (L - Left, R - Right)";
+          y.title = "Median Home Runs hit";
+          // draw plot
+          myChart.draw();
+
+        };
+
+      </script>
+        <h1>Lefties come out on top!<br></h1>
+        <p>
+        The first plot is a plot between the Right Handed Batters median batting average vs Left Handed Batters median batting average. As we can see, the Lefties have a higher median batting average.
+        </p>
+        <p>
+        This second plot is a plot between the Right Handed Batters median home runs hit vs Left Handed Batters
+        median home runs hit. As we can see, the Lefties in general hit more home runs.
+        </p>
+        <script type="text/javascript">
+        /*
+        Use D3 (not dimple.js) to load the CSV file
+        and pass the contents of it to the draw function
+        */
+        // load final csv file 
+        d3.csv("baseball_data_final.csv", draw1);
+        d3.csv("baseball_data_final.csv", draw2);
+        </script> 
+    </div>
+</body>
+</html>
