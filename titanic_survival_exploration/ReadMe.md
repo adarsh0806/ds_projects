@@ -1,0 +1,1 @@
+Designed an algorithm for predicting whether or not a person survived the Titanic disaster, based on their features with a manual implementation of a decision tree.

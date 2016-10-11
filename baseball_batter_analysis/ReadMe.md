@@ -1,0 +1,1 @@
+Used dimplejs to perform a visual experiment on an open baseball dataset to find if right handed batters fare better than left handed batters.

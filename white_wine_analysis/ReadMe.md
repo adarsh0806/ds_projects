@@ -1,0 +1,1 @@
+To find out what makes a good white wine, I used R to apply exploratory data analysis techniques to explore relationships in multiple variables and to find for distributions, outliers, and anomalies.
